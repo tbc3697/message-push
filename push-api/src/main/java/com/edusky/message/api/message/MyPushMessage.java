@@ -1,11 +1,19 @@
 package com.edusky.message.api.message;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author tbc on 2017/8/31 15:40:47.
  */
 @Slf4j
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MyPushMessage {
     //类型  系统编号 0xAB 表示A系统，0xBC 表示B系统
     private byte type;

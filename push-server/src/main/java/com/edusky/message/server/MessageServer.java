@@ -2,8 +2,11 @@ package com.edusky.message.server;
 
 import com.edusky.message.api.codec.MessageDecoder;
 import com.edusky.message.api.codec.MessageEncoder;
+import com.edusky.message.api.codec.mypush.MyMessageDecoder;
+import com.edusky.message.api.codec.mypush.MyMessageEncoder;
 import com.edusky.message.server.handler.HeartbeatResHandler;
 import com.edusky.message.server.handler.LoginAuthResHandler;
+import com.edusky.message.server.handler.MyResponseHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -40,11 +43,10 @@ public class MessageServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws IOException {
-                            ch.pipeline().addLast(new MessageDecoder(1024 * 1024, 4, 4));
-                            ch.pipeline().addLast(new MessageEncoder());
-                            ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(15));
-                            ch.pipeline().addLast("LoginAuthResHandler", new LoginAuthResHandler());
-                            ch.pipeline().addLast("HeartBeatHandler", new HeartbeatResHandler());
+                            ch.pipeline().addLast(new MyMessageDecoder(1024 * 1024, 0, 4));
+                            ch.pipeline().addLast(new MyMessageEncoder());
+                            ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(50));
+                            ch.pipeline().addLast("MyResponseHandler", new MyResponseHandler());
                         }
                     });
 

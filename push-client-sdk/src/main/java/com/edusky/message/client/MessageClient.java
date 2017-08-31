@@ -42,7 +42,7 @@ public class MessageClient {
                         public void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast("MyMessageDecoder", new MyMessageDecoder(1024 * 1024, 0, 4));
                             ch.pipeline().addLast("MyMessageEncoder", new MyMessageEncoder());
-                            ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(15));
+                            ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(50));
                             ch.pipeline().addLast("MyRequestHandler", new MyRequestHandler());
                         }
                     });

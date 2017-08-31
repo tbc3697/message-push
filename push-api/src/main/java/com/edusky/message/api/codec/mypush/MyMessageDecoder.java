@@ -19,6 +19,7 @@ public class MyMessageDecoder extends LengthFieldBasedFrameDecoder {
 
     @Override
     protected Object decode(ChannelHandlerContext context, ByteBuf in) throws Exception {
+        log.info("decode byteBuf length : {}", in.readableBytes());
         ByteBuf frame = (ByteBuf) super.decode(context, in);
         if (frame == null) return null;
         return getJSONString(in);
@@ -27,7 +28,9 @@ public class MyMessageDecoder extends LengthFieldBasedFrameDecoder {
     private String getJSONString(ByteBuf in) {
         in.readInt();
         if (in.readableBytes() > 4) {
-            return in.readCharSequence(in.readableBytes(), StandardCharsets.UTF_8).toString();
+            String str = in.readCharSequence(in.readableBytes(), StandardCharsets.UTF_8).toString();
+            log.info("msg : {} ", str);
+            return str;
         }
         return null;
     }
