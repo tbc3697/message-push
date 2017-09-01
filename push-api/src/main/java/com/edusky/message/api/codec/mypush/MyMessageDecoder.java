@@ -1,5 +1,7 @@
 package com.edusky.message.api.codec.mypush;
 
+import com.alibaba.fastjson.JSON;
+import com.edusky.message.api.message.MyPushMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -20,13 +22,15 @@ public class MyMessageDecoder extends LengthFieldBasedFrameDecoder {
     @Override
     protected Object decode(ChannelHandlerContext context, ByteBuf in) throws Exception {
         log.info("decode byteBuf length : {}", in.readableBytes());
+        System.out.println("=====================" + in.getInt(0));
         ByteBuf frame = (ByteBuf) super.decode(context, in);
         if (frame == null) return null;
-        return getJSONString(in);
+        String json = getJSONString(frame);
+        return JSON.parseObject(json, MyPushMessage.class);
     }
 
     private String getJSONString(ByteBuf in) {
-        in.readInt();
+        int a = in.readInt();
         if (in.readableBytes() > 4) {
             String str = in.readCharSequence(in.readableBytes(), StandardCharsets.UTF_8).toString();
             log.info("msg : {} ", str);

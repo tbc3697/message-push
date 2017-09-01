@@ -1,8 +1,8 @@
-package com.edusky.message.client.handler;
+package com.edusky.push.commond.handler;
 
 import com.edusky.message.api.MsgType;
-import com.edusky.message.api.message.PushMessage;
 import com.edusky.message.api.message.MessageHeader;
+import com.edusky.message.api.message.PushMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author tbc on 2017/8/30 09:43:08.
  */
 @Slf4j
-public class LoginAuthReqHandler extends SimpleChannelInboundHandler<PushMessage> {
+public class LoginAuthReqHandler extends SimpleChannelInboundHandler {
     /**
      * TCP三次握手成功后，发送
      */
@@ -21,20 +21,20 @@ public class LoginAuthReqHandler extends SimpleChannelInboundHandler<PushMessage
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, PushMessage msg) throws Exception {
-        if (msg == null) {
-            throw new RuntimeException("receive and decoded message object is null");
+    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
+        PushMessage pushMessage = (PushMessage) msg;
+        if (pushMessage == null) {
+
         }
-        MessageHeader header = msg.getHeader();
         // 如果是握手应答消息，要判断是否认证成功
-        if (header != null && MsgType.LOGIN_RES.equals(header.getType())) {
-            byte loginResult = (byte) msg.getBody();
-            //
+        assert pushMessage != null;
+        if (pushMessage.getHeader() != null && MsgType.LOGIN_RES.equals(pushMessage.getHeader().getType())) {
+            byte loginResult = (byte) pushMessage.getBody();
             if (loginResult != (byte) 0) {
                 // 握手失败，关闭连接
                 ctx.close();
             } else {
-//                log.debug("Login is Ok: ", pushMessage);
+                log.debug("Login is Ok: ", pushMessage);
                 ctx.fireChannelRead(msg);
             }
         } else {

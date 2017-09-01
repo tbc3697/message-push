@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class Constant {
-    public static String HOST = "127.0.0.1";
+    public static String HOST = "192.168.1.178";
     public static int PORT = 7007;
 
     public static int DISCONNECT_TIME = 5 * 3;

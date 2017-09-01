@@ -1,4 +1,4 @@
-package com.edusky.message.client.handler;
+package com.edusky.push.commond.handler;
 
 import com.edusky.message.api.MsgType;
 import com.edusky.message.api.message.MessageHeader;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @author tbc on 2017/8/31 15:37:04.
  */
 @Slf4j
-public class MyRequestHandler extends SimpleChannelInboundHandler<MyPushMessage> {
+public class MyRequestHandler extends SimpleChannelInboundHandler {
     private volatile ScheduledFuture heartbeat;
 
     @Override
@@ -25,7 +25,7 @@ public class MyRequestHandler extends SimpleChannelInboundHandler<MyPushMessage>
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, MyPushMessage msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.info("receive message : {}", msg);
         MyPushMessage message = (MyPushMessage) msg;
         if (message != null) {
@@ -59,9 +59,14 @@ public class MyRequestHandler extends SimpleChannelInboundHandler<MyPushMessage>
         );
     }
 
+    private void sendCmd(ChannelHandlerContext ctx) {
+        MyPushMessage heartbeatPushMessage = MyPushMessage.builder().flag((byte) 4).build();
+    }
+
 
     private class HeartbeatTask implements Runnable {
         private ChannelHandlerContext context;
+
 
         HeartbeatTask(ChannelHandlerContext ctx) {
             this.context = ctx;

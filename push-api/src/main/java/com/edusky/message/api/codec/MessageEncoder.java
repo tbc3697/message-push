@@ -25,7 +25,6 @@ public class MessageEncoder extends MessageToByteEncoder<PushMessage> {
 
     private void buildBuf(ByteBuf sendBuf, PushMessage msg) {
         MessageHeader header = msg.getHeader();
-        sendBuf.writeInt(header.getCrcCode());
         sendBuf.writeInt(header.getLength());
         sendBuf.writeLong(header.getSessionId());
         sendBuf.writeByte(header.getType());
@@ -35,12 +34,8 @@ public class MessageEncoder extends MessageToByteEncoder<PushMessage> {
         } else {
             sendBuf.writeInt(0);
         }
-        // 回写长度，索引4的位置，是消息的长度
-        sendBuf.setInt(4, sendBuf.readableBytes() - 8);
-    }
-
-    private void jsonEncode(Object value, ByteBuf buf) {
-        buf.writeBytes(JSON.toJSONString(value).getBytes());
+        // 回写长度，索引0的位置，然后整个消息的长度是从长度后面的字节开始算起
+        sendBuf.setInt(0, sendBuf.readableBytes() - 4);
     }
 
     private byte[] getBytes(Object value) {

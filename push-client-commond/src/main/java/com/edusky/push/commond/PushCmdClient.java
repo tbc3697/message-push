@@ -1,9 +1,7 @@
-package com.edusky.message.client;
+package com.edusky.push.commond;
 
 import com.edusky.message.api.codec.mypush.MyMessageDecoder;
 import com.edusky.message.api.codec.mypush.MyMessageEncoder;
-import com.edusky.message.api.toolkit.Sleeps;
-import com.edusky.message.client.handler.MyRequestHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -14,6 +12,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
+import pub.tbc.toolkit.Sleeps;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -23,7 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * @author tbc on 2017/8/30 11:30:38.
  */
 @Slf4j
-public class MessageClient {
+public class PushCmdClient {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
     private EventLoopGroup group = new NioEventLoopGroup();
@@ -40,7 +39,7 @@ public class MessageClient {
                             ch.pipeline().addLast("MyMessageDecoder", new MyMessageDecoder(1024 * 1024, 0, 4));
                             ch.pipeline().addLast("MyMessageEncoder", new MyMessageEncoder());
                             ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(50));
-                            ch.pipeline().addLast("MyRequestHandler", new MyRequestHandler());
+//                            ch.pipeline().addLast("MyRequestHandler", new MyRequestHandler());
                         }
                     });
             // 异步连接
@@ -62,7 +61,7 @@ public class MessageClient {
     }
 
     public static void main(String[] args) {
-        new MessageClient().connect(Constant.REMOTE_IP, Constant.REMOTE_PORT);
+        new PushCmdClient().connect(Constant.REMOTE_IP, Constant.REMOTE_PORT);
 //        Sleeps.days(1);
     }
 

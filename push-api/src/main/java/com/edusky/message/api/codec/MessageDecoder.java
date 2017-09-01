@@ -29,7 +29,6 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
 
         pushMessage.setHeader(
                 MessageHeader.builder()
-                        .crcCode(in.readInt())
                         .length(in.readInt())
                         .sessionId(in.readLong())
                         .type(in.readByte())
