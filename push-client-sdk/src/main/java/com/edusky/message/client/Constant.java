@@ -11,7 +11,8 @@ public class Constant {
     public static int LOCAL_PORT = 11707;
 
     // 172
-    public static String REMOTE_IP = "192.168.1.32";
+    public static String REMOTE_IP = "192.168.1.178";
+    //    public static String REMOTE_IP = "192.168.1.32";
     public static int REMOTE_PORT = 7007;
 
     public static int RECONNECT_TIME = 5;
