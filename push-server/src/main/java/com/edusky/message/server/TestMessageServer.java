@@ -22,9 +22,9 @@ import java.io.IOException;
  * @author tbc on 2017/8/29 11:43:49.
  */
 @Slf4j
-public class MessageServer {
+public class TestMessageServer {
     public static void main(String[] args) {
-        new MessageServer().bind();
+        new TestMessageServer().bind();
         Sleeps.days(99);
     }
 

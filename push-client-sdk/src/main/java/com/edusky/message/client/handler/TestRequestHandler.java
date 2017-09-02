@@ -15,8 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @author tbc on 2017/8/31 15:37:04.
  */
 @Slf4j
-public class MyRequestHandler extends SimpleChannelInboundHandler<MyPushMessage> {
-    private volatile ScheduledFuture heartbeat;
+public class TestRequestHandler extends SimpleChannelInboundHandler<MyPushMessage> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -51,8 +50,8 @@ public class MyRequestHandler extends SimpleChannelInboundHandler<MyPushMessage>
     }
 
     private void heartbeat(MyPushMessage message, ChannelHandlerContext ctx) {
-        heartbeat = ctx.executor().scheduleAtFixedRate(
-                new MyRequestHandler.HeartbeatTask(ctx),
+        ScheduledFuture heartbeat = ctx.executor().scheduleAtFixedRate(
+                new HeartbeatTask(ctx),
                 0,
                 5000,
                 TimeUnit.MILLISECONDS

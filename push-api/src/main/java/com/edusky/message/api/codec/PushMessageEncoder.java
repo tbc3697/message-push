@@ -12,10 +12,19 @@ import lombok.extern.slf4j.Slf4j;
 import java.nio.charset.StandardCharsets;
 
 /**
- * @author tbc on 2017/8/31 15:08:47.
+ * 编码规则
+ * <pre>
+ * +----+----------+-----------+-----------+------------+
+ * |字段 | Length   | sessionId |   type    | body       |
+ * +----+----------+-----------+-----------+------------+
+ * |长度 | int:4byte| long:8byte|  byte:1   | jsonEntity |
+ * +----+----------+-----------+-----------+------------+
+ * |方法 |writeInt()|writeLong()|writeByte()|writeBytes()|
+ * +----+----------+-----------+-----------+------------+
+ * </pre>
  */
 @Slf4j
-public class JSONMessageEncoder extends MessageToByteEncoder<PushMessage> {
+public class PushMessageEncoder extends MessageToByteEncoder<PushMessage> {
     @Override
     protected void encode(ChannelHandlerContext ctx, PushMessage msg, ByteBuf out) throws Exception {
         log.debug("encode Object msg : {} ", msg);
@@ -27,7 +36,7 @@ public class JSONMessageEncoder extends MessageToByteEncoder<PushMessage> {
             throw new RuntimeException("message header is null!");
         }
         // 写消息头
-        // 长度，暂且0，回头重写
+        // 长度，暂且0，处理完消息体重写
         out.writeInt(0);
         //
         out.writeLong(header.getSessionId());

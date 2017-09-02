@@ -17,4 +17,19 @@ public enum DeviceType {
     private int type;
     @Getter
     private String name;
+
+    public static DeviceType getDeviceType(int type) {
+        switch (type) {
+            case 1:
+                return WEB;
+            case 2:
+                return PHONE;
+            case 3:
+                return TV;
+            case 4:
+                return PAD;
+            default:
+                throw new RuntimeException("不是有效的设备类型");
+        }
+    }
 }

@@ -5,7 +5,6 @@ import com.edusky.message.api.codec.mypush.MyMessageEncoder;
 import com.edusky.message.api.toolkit.Sleeps;
 import com.edusky.message.client.handler.HeartbeatReqHandler;
 import com.edusky.message.client.handler.LoginAuthReqHandler;
-import com.edusky.message.client.handler.MyRequestHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -27,8 +26,11 @@ import java.util.concurrent.ScheduledExecutorService;
 @Slf4j
 public class MessagePushClient {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-
     private EventLoopGroup group = new NioEventLoopGroup();
+
+    public MessagePushClient(PushCallback callback) {
+
+    }
 
     public void connect(String host, int port) {
         try {
@@ -65,8 +67,7 @@ public class MessagePushClient {
     }
 
     public static void main(String[] args) {
-        new MessagePushClient().connect(Constant.REMOTE_IP, Constant.REMOTE_PORT);
-//        Sleeps.days(1);
+        new MessagePushClient(System.out::println).connect(Constant.REMOTE_IP, Constant.REMOTE_PORT);
     }
 
 }

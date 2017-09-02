@@ -1,12 +1,13 @@
 package com.edusky.message.api.codec;
 
+import com.alibaba.fastjson.JSON;
 import com.edusky.message.api.message.MessageHeader;
 import com.edusky.message.api.message.PushMessage;
+import com.edusky.message.api.message.PushMessageContent;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import lombok.extern.slf4j.Slf4j;
-import sun.plugin2.message.Message;
 
 import java.nio.charset.StandardCharsets;
 
@@ -14,15 +15,15 @@ import java.nio.charset.StandardCharsets;
  * @author tbc on 2017/8/31 15:11:56.
  */
 @Slf4j
-public class JSONMessageDecoder extends LengthFieldBasedFrameDecoder {
-//    public JSONMessageDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength) {
-//        super(maxFrameLength, lengthFieldOffset, lengthFieldLength);
-//    }
+public class PushMessageDecoder extends LengthFieldBasedFrameDecoder {
+    public PushMessageDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength) {
+        super(maxFrameLength, lengthFieldOffset, lengthFieldLength);
+    }
 
     /**
      * 长度位置、长度、单包最大容量写死
      */
-    public JSONMessageDecoder() {
+    public PushMessageDecoder() {
         super(1024 * 1024, 0, 4);
     }
 
@@ -43,9 +44,13 @@ public class JSONMessageDecoder extends LengthFieldBasedFrameDecoder {
         // 为什么是大于4？编码时如果消息体为空，我们writeInt(0)写了一个值为0的int4byte
         if (in.readableBytes() > 4) {
             String body = getJSONString(in);
-            pushMessage.setBody(body);
+            pushMessage.setBody(getBody(body));
         }
         return pushMessage;
+    }
+
+    private PushMessageContent getBody(String json) {
+        return JSON.parseObject(json, PushMessageContent.class);
     }
 
     private String getJSONString(ByteBuf in) {

@@ -1,9 +1,6 @@
 package com.edusky.message.api.message;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,9 +13,25 @@ import lombok.extern.slf4j.Slf4j;
 @Builder
 public class PushMessage {
     private MessageHeader header;
-    private Object body;
+    private PushMessageContent body;
 
     public PushMessage(MessageHeader header) {
         this.header = header;
+    }
+
+    public static PushMessage buildAuthRequestEntity() {
+        return new PushMessage(new MessageHeader((byte) 3));
+    }
+
+    public static PushMessage buildAuthResponseEntity() {
+        return new PushMessage(new MessageHeader((byte) 4));
+    }
+
+    public static PushMessage buildHeartbeatRequestEntity() {
+        return new PushMessage(new MessageHeader((byte) 5));
+    }
+
+    public static PushMessage buildHeartbeatResponseEntity() {
+        return new PushMessage(new MessageHeader((byte) 5));
     }
 }
