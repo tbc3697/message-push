@@ -1,9 +1,12 @@
 package com.edusky.message.server;
 
-import com.edusky.message.api.codec.mypush.MyMessageDecoder;
-import com.edusky.message.api.codec.mypush.MyMessageEncoder;
+import com.edusky.message.api.codec.PushMessageDecoder;
+import com.edusky.message.api.codec.PushMessageEncoder;
 import com.edusky.message.api.toolkit.Sleeps;
+import com.edusky.message.server.handler.HeartbeatResHandler;
+import com.edusky.message.server.handler.LoginAuthResHandler;
 import com.edusky.message.server.handler.MyResponseHandler;
+import com.edusky.message.server.handler.PushCommandHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -22,9 +25,9 @@ import java.io.IOException;
  * @author tbc on 2017/8/29 11:43:49.
  */
 @Slf4j
-public class TestMessageServer {
+public class PushMessageServer {
     public static void main(String[] args) {
-        new TestMessageServer().bind();
+        new PushMessageServer().bind();
         Sleeps.days(99);
     }
 
@@ -39,10 +42,13 @@ public class TestMessageServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws IOException {
-                            ch.pipeline().addLast(new MyMessageDecoder(1024 * 1024, 0, 4));
-                            ch.pipeline().addLast(new MyMessageEncoder());
-                            ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(50));
-                            ch.pipeline().addLast("MyResponseHandler", new MyResponseHandler());
+                            ch.pipeline()
+                                    .addLast("decoder", new PushMessageDecoder())
+                                    .addLast("encoder", new PushMessageEncoder())
+                                    .addLast("readTimeoutHandler", new ReadTimeoutHandler(50))
+                                    .addLast("loginAuthResHandler", new LoginAuthResHandler())
+                                    .addLast("heartbeatResHandler", new HeartbeatResHandler())
+                                    .addLast("", new PushCommandHandler());
                         }
                     });
 
@@ -51,11 +57,10 @@ public class TestMessageServer {
             log.info("MessagePush server start ok : {} : {}", Constant.HOST, Constant.PORT);
         } catch (InterruptedException e1) {
             e1.printStackTrace();
+        } finally {
+            workerGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully();
         }
-//        finally {
-//            workerGroup.shutdownGracefully();
-//            bossGroup.shutdownGracefully();
-//        }
     }
 
 }

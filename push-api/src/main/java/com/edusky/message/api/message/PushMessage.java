@@ -19,8 +19,23 @@ public class PushMessage {
         this.header = header;
     }
 
-    public static PushMessage buildAuthRequestEntity() {
-        return new PushMessage(new MessageHeader((byte) 3));
+    public static PushMessage buildRequestEntity() {
+        PushMessageContent content = new PushMessageContent();
+
+
+        return new PushMessage(new MessageHeader((byte) 0), content);
+    }
+
+    public static PushMessage buildResponseEntity() {
+        return new PushMessage(new MessageHeader((byte) 1));
+    }
+
+    public static PushMessage buildONEWAYEntity() {
+        return new PushMessage(new MessageHeader((byte) 2));
+    }
+
+    public static PushMessage buildAuthRequestEntity(PushMessageContent content) {
+        return new PushMessage(new MessageHeader((byte) 3), content);
     }
 
     public static PushMessage buildAuthResponseEntity() {
@@ -32,6 +47,14 @@ public class PushMessage {
     }
 
     public static PushMessage buildHeartbeatResponseEntity() {
-        return new PushMessage(new MessageHeader((byte) 5));
+        return new PushMessage(new MessageHeader((byte) 6));
+    }
+
+
+    public static PushMessage buildExceptionRes(String eMsg) {
+        PushMessage message = buildResponseEntity();
+        PushMessageContent content = message.getBody();
+        content.setContentBody(eMsg);
+        return message;
     }
 }

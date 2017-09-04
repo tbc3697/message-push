@@ -1,8 +1,11 @@
 package com.edusky.message.server.handler;
 
 import com.edusky.message.api.MsgType;
-import com.edusky.message.api.message.PushMessage;
 import com.edusky.message.api.message.MessageHeader;
+import com.edusky.message.api.message.MsgIdentity;
+import com.edusky.message.api.message.PushMessage;
+import com.edusky.message.api.message.PushMessageContent;
+import com.edusky.message.server.ChannelCache;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -22,21 +25,23 @@ public class LoginAuthResHandler extends SimpleChannelInboundHandler<PushMessage
         assert header != null;
         // 握手请求信息，处理，其它，透传
         if (MsgType.LOGIN_REQ.equals(header.getType())) {
-            String nodeIndex = ctx.channel().remoteAddress().toString();
-            //1. 验证token；
-            //2. 查找channel列表，判断是否重复；
-            //3. 若未重复，建立连接，并保存到channel列表；
-            //4. 若重复，断开旧连接，重复3；
+            PushMessageContent messageContent = msg.getBody();
+            MsgIdentity identity = messageContent.getFrom();
 
-            ctx.writeAndFlush(buildResponse());
+            //1. 验证token,通过则加入缓存（若存在，关掉旧连接，并刷新连接缓存
+            if (checkToken(identity)) {
+                ChannelCache.flush(identity, ctx.channel());
+            }
+
+            ctx.writeAndFlush(PushMessage.buildAuthResponseEntity());
         } else {
             ctx.fireChannelRead(msg);
         }
-
     }
 
-    private PushMessage buildResponse() {
-        return new PushMessage(new MessageHeader(MsgType.LOGIN_RES.getCode()));
+
+    private boolean checkToken(MsgIdentity identity) {
+        return true;
     }
 
 }

@@ -1,8 +1,10 @@
 package com.edusky.message.client.handler;
 
 import com.edusky.message.api.MsgType;
+import com.edusky.message.api.message.MsgIdentity;
 import com.edusky.message.api.message.PushMessage;
 import com.edusky.message.api.message.MessageHeader;
+import com.edusky.message.api.message.PushMessageContent;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +14,18 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class LoginAuthReqHandler extends SimpleChannelInboundHandler<PushMessage> {
+    private MsgIdentity identity;
+
+    public LoginAuthReqHandler(MsgIdentity identity) {
+        this.identity = identity;
+    }
+
     /**
      * TCP三次握手成功后，发送
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        ctx.writeAndFlush(buildLoginReq());
+        ctx.writeAndFlush(PushMessage.buildAuthRequestEntity(PushMessageContent.builder().from(identity).build()));
     }
 
     @Override
@@ -28,15 +36,7 @@ public class LoginAuthReqHandler extends SimpleChannelInboundHandler<PushMessage
         MessageHeader header = msg.getHeader();
         // 如果是握手应答消息，要判断是否认证成功
         if (header != null && MsgType.LOGIN_RES.equals(header.getType())) {
-            byte loginResult = (byte) msg.getBody();
-            //
-            if (loginResult != (byte) 0) {
-                // 握手失败，关闭连接
-                ctx.close();
-            } else {
-//                log.debug("Login is Ok: ", pushMessage);
-                ctx.fireChannelRead(msg);
-            }
+            log.debug("receive heartbeat message: {}", msg);
         } else {
             ctx.fireChannelRead(msg);
         }
@@ -47,14 +47,6 @@ public class LoginAuthReqHandler extends SimpleChannelInboundHandler<PushMessage
         log.error("异常： {} - {}", cause.getClass(), cause.getMessage());
         cause.printStackTrace();
         ctx.fireExceptionCaught(cause);
-    }
-
-    private PushMessage buildLoginReq() {
-        PushMessage pushMessage = new PushMessage();
-        MessageHeader header = new MessageHeader();
-        header.setType(MsgType.LOGIN_REQ.getCode());
-        pushMessage.setHeader(header);
-        return pushMessage;
     }
 
 

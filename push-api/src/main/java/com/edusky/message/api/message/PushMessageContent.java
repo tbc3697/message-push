@@ -15,12 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PushMessageContent {
-    //length=36
-    private String openId;
-    // 认证时用，从token缓存中拿
-    private String token;
-    // 设备类型
-    private byte deviceType;
-
+    private MsgIdentity from;
+    private MsgIdentity to;
     private Object contentBody;
 }

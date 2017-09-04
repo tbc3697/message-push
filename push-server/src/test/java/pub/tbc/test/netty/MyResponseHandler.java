@@ -1,4 +1,4 @@
-package com.edusky.message.server.handler;
+package pub.tbc.test.netty;
 
 import com.edusky.message.api.message.MyPushMessage;
 import io.netty.channel.ChannelHandlerContext;
