@@ -23,7 +23,8 @@ public class PushCommandHandler extends SimpleChannelInboundHandler<PushMessage>
     protected void channelRead0(ChannelHandlerContext ctx, PushMessage msg) throws Exception {
         MessageHeader header = msg.getHeader();
         // 如果消息类型是业务推送请求，则处理
-        if (Objs.isEmpty(header) && MsgType.REQ.equals(header.getType())) {
+        if (Objs.nonEmpty(header) && MsgType.REQ.equals(header.getType())) {
+            log.debug("********************************************************************");
             PushMessageContent content = msg.getBody();
             if (Objs.isEmpty(content)) {
                 ctx.channel().writeAndFlush("消息体为空");
@@ -39,7 +40,15 @@ public class PushCommandHandler extends SimpleChannelInboundHandler<PushMessage>
             }
 
             assert channel != null;
-            channel.writeAndFlush(content.getContentBody());
+            PushMessage request = PushMessage.buildRequestEntity();
+            request.getBody().setFrom(content.getFrom());
+            request.getBody().setTo(identity);
+            request.getBody().setContentBody(content.getContentBody());
+            channel.writeAndFlush(request);
+
+            ctx.writeAndFlush(PushMessage.buildResponseEntity());
+        } else {
+            ctx.fireChannelRead(msg);
         }
     }
 

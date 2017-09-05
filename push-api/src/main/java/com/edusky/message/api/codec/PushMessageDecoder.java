@@ -36,14 +36,14 @@ public class PushMessageDecoder extends LengthFieldBasedFrameDecoder {
         // 开始解码
         PushMessage pushMessage = new PushMessage();
         MessageHeader header = new MessageHeader();
-        header.setLength(in.readInt());
-        header.setSessionId(in.readLong());
-        header.setType(in.readByte());
+        header.setLength(frame.readInt());
+        header.setSessionId(frame.readLong());
+        header.setType(frame.readByte());
 
         pushMessage.setHeader(header);
         // 为什么是大于4？编码时如果消息体为空，我们writeInt(0)写了一个值为0的int4byte
-        if (in.readableBytes() > 4) {
-            String body = getJSONString(in);
+        if (frame.readableBytes() > 4) {
+            String body = getJSONString(frame);
             pushMessage.setBody(getBody(body));
         }
         return pushMessage;

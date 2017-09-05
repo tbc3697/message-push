@@ -10,9 +10,8 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>push-server</module>
-        <module>push-client-sdk</module>
+        <module>push-client</module>
         <module>push-api</module>
-        <module>push-client-commond</module>
     </modules>
 
     <dependencies>
@@ -49,12 +48,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.4</version>
-        </dependency>
-
-        <dependency>
             <groupId>pub.tbc</groupId>
             <artifactId>toolkit-core</artifactId>
             <version>1.2.4-SNAPSHOT</version>
@@ -75,6 +68,22 @@
             </plugin>
         </plugins>
     </build>
+
+
+    <!-- 发布构件到私服 -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>eduspace-release</id>
+            <name>yijiajiao-dependent-snapshot</name>
+            <url>http://nexus.e-eduspace.com/content/repositories/snapshots/</url>
+            <uniqueVersion>true</uniqueVersion>
+        </snapshotRepository>
+        <repository>
+            <id>eduspace-release</id>
+            <name>yijiajiao-dependent-release</name>
+            <url>http://nexus.e-eduspace.com/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
 
 
 </project>

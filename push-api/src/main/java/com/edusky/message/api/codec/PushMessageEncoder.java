@@ -50,8 +50,10 @@ public class PushMessageEncoder extends MessageToByteEncoder<PushMessage> {
             byte[] value = getJSONBytes(msg.getBody());
             out.writeBytes(value);
             //+9是加上sessionId和消息类型的长度，半包解码计算长度从长度字段的后一个字节开始
-            out.setInt(0, value.length + 9);
+//            out.setInt(0, value.length + 9);
         }
+        out.setInt(0, out.readableBytes() - 4);
+
     }
 
     private byte[] getJSONBytes(Object o) {

@@ -19,7 +19,11 @@ public class HeartbeatResHandler extends SimpleChannelInboundHandler<PushMessage
         MessageHeader header = msg.getHeader();
         if (header != null && MsgType.HEARTBEAT_REQ.equals(header.getType())) {
             log.debug("receive heartbeat: {}", ctx.channel().remoteAddress());
+            ctx.writeAndFlush(PushMessage.buildHeartbeatResponseEntity());
+        } else {
+            ctx.fireChannelRead(msg);
         }
+
     }
 
     @Override

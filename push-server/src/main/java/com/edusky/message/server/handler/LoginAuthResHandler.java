@@ -19,15 +19,14 @@ public class LoginAuthResHandler extends SimpleChannelInboundHandler<PushMessage
     protected void channelRead0(ChannelHandlerContext ctx, PushMessage msg) throws Exception {
         /*对msg进行验证，可以获取token比对*/
         MessageHeader header = msg.getHeader();
-        if (header == null) {
+        log.debug("header={}", header);
 
-        }
         assert header != null;
         // 握手请求信息，处理，其它，透传
         if (MsgType.LOGIN_REQ.equals(header.getType())) {
             PushMessageContent messageContent = msg.getBody();
             MsgIdentity identity = messageContent.getFrom();
-
+            log.info("连接认证请求, 来自: {}", identity);
             //1. 验证token,通过则加入缓存（若存在，关掉旧连接，并刷新连接缓存
             if (checkToken(identity)) {
                 ChannelCache.flush(identity, ctx.channel());
@@ -38,7 +37,6 @@ public class LoginAuthResHandler extends SimpleChannelInboundHandler<PushMessage
             ctx.fireChannelRead(msg);
         }
     }
-
 
     private boolean checkToken(MsgIdentity identity) {
         return true;
