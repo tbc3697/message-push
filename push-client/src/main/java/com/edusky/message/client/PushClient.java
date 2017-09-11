@@ -27,7 +27,7 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 @Slf4j
 @Data
-class PushClient {
+public class PushClient {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     private EventLoopGroup group = new NioEventLoopGroup();
     private PushCallback callback;
@@ -65,9 +65,12 @@ class PushClient {
             e.printStackTrace();
         } finally {
             // 所有资源释放完成后，清空资源，再次发起重边操作
-            executor.execute(() -> {
-                Sleeps.seconds(Constant.RECONNECT_TIME);
-                connect(Constant.REMOTE_IP, Constant.REMOTE_PORT);
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Sleeps.seconds(Constant.RECONNECT_TIME);
+                    connect(Constant.REMOTE_IP, Constant.REMOTE_PORT);
+                }
             });
         }
     }

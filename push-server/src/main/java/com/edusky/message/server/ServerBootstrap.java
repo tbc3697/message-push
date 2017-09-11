@@ -1,5 +1,6 @@
 package com.edusky.message.server;
 
+import com.edusky.message.api.toolkit.Objs;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
@@ -10,7 +11,16 @@ import java.net.InetSocketAddress;
 @Slf4j
 public class ServerBootstrap {
     public static void main(String[] args) {
-        new PushServer().bind(new InetSocketAddress("192.168.1.178", 7007));
-//        Sleeps.days(99);
+        String host = Constant.HOST;
+        int port = Constant.PORT;
+        if (Objs.nonEmpty(args)) {
+            host = args[0];
+            if (args.length > 1) {
+                port = Integer.valueOf(args[1]);
+            }
+        }
+        new PushServer().bind(
+                new InetSocketAddress(host, port)
+        );
     }
 }

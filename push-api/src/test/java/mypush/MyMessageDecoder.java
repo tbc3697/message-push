@@ -1,4 +1,4 @@
-package com.edusky.message.api.codec.mypush;
+package mypush;
 
 import com.alibaba.fastjson.JSON;
 import com.edusky.message.api.message.MyPushMessage;

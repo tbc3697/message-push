@@ -1,7 +1,5 @@
 package pub.tbc.test.netty;
 
-import com.edusky.message.api.codec.mypush.MyMessageDecoder;
-import com.edusky.message.api.codec.mypush.MyMessageEncoder;
 import com.edusky.message.api.toolkit.Sleeps;
 import com.edusky.message.server.Constant;
 import io.netty.bootstrap.ServerBootstrap;
@@ -39,8 +37,8 @@ public class TestMessageServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws IOException {
-                            ch.pipeline().addLast(new MyMessageDecoder(1024 * 1024, 0, 4));
-                            ch.pipeline().addLast(new MyMessageEncoder());
+//                            ch.pipeline().addLast(new MyMessageDecoder(1024 * 1024, 0, 4));
+//                            ch.pipeline().addLast(new MyMessageEncoder());
                             ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(50));
                             ch.pipeline().addLast("MyResponseHandler", new MyResponseHandler());
                         }

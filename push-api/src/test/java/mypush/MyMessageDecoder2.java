@@ -1,9 +1,8 @@
-package com.edusky.message.api.codec.mypush;
+package mypush;
 
 import com.edusky.message.api.message.MyPushMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import lombok.extern.slf4j.Slf4j;
 

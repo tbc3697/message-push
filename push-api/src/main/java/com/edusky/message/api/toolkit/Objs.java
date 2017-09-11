@@ -30,6 +30,9 @@ public class Objs {
             return ((Map) obj).isEmpty();
         if (obj instanceof Collection)
             return ((Collection) obj).isEmpty();
+        if (obj instanceof Object[]) {
+            return ((Object[]) obj).length == 0;
+        }
         return obj instanceof String && ((String) obj).length() == 0;
 
     }

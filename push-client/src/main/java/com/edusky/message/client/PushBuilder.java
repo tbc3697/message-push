@@ -3,10 +3,9 @@ package com.edusky.message.client;
 import com.edusky.message.api.message.MsgIdentity;
 import com.edusky.message.api.message.PushMessage;
 import com.edusky.message.api.message.PushMessageContent;
-import com.edusky.message.api.toolkit.Loops;
 import com.edusky.message.api.toolkit.Sleeps;
-import com.sun.javafx.geom.transform.Identity;
 import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * @author tbc on 2017/9/2 15:12:08.
@@ -42,28 +41,72 @@ public class PushBuilder {
 
     public static void main(String[] args) {
 
-        Loops.times(999, i -> {
-            new Thread(() -> {
-                PushClient client = new PushBuilder()
-                        .callback(System.out::println)
-                        .deviceType((byte) 2)
-                        .openId("edu-space-blueSky-message-" + Thread.currentThread().getName())
-                        .getClient();
-                client.connect("192.168.1.178", 7007);
-            }, "thread-" + i).start();
-        });
-        Sleeps.seconds(8);
-        PushClient client = new PushBuilder()
-                .callback(System.out::println)
+//        for (int i = 0; i < 3; i++) {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    {
+//                        PushClient client = new PushBuilder()
+//                                .callback(new PushCallback() {
+//                                    @Override
+//                                    public void callback(Object msg) {
+//                                        System.out.println(msg);
+//                                    }
+//                                })
+//                                .deviceType((byte) 2)
+//                                .openId("edu-space-blueSky-message-" + Thread.currentThread().getName())
+//                                .getClient();
+//                        client.connect("192.168.1.178", 7007);
+//
+//                        new PushBuilder()
+//                                .callback(new PushCallback() {
+//                                    @Override
+//                                    public void callback(Object msg) {
+//                                        System.out.println(msg);
+//                                    }
+//                                })
+//                                .deviceType((byte) 2)
+//                                .openId("edu-space-blueSky-message-" + Thread.currentThread().getName())
+//                                .getClient()
+//                                .connect("192.168.1.178", 7007);
+//                    }
+//                }
+//            }, "thread-" + i).start();
+//        }
+
+
+//        Sleeps.seconds(8);
+        //初始化
+        final PushClient client = new PushBuilder()
+                .callback(new PushCallback() {
+                    @Override
+                    public void callback(Object msg) {
+                        System.out.println(msg);
+                    }
+                })
                 .deviceType((byte) 2)
                 .openId("edu-space-blueSky-message-" + Thread.currentThread().getName())
                 .getClient();
-        new Thread(() -> client.connect("192.168.1.178", 7007)).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                client.connect("192.168.1.178", 7007);
+            }
+        }).start();
         Sleeps.seconds(2);
+        // 构建消息
         PushMessage message = PushMessage.buildRequestEntity();
         PushMessageContent content = message.getBody();
         content.setFrom(client.getIdentity());
-        content.setTo(MsgIdentity.builder().deviceType((byte) 2).openId("edu-space-blueSky-message-thread-2").build());
+        content.setTo(
+                MsgIdentity.builder()
+                        .deviceType((byte) 2)
+                        .openId("12345678990")
+                        .build()
+        );
+        // 发消息
         client.sendMsg(message);
+
+        Sleeps.hours(1);
     }
 }

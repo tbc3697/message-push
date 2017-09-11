@@ -36,10 +36,10 @@ public class PushCommandHandler extends SimpleChannelInboundHandler<PushMessage>
             }
             Channel channel = getChannel(identity);
             if (Objs.isEmpty(channel)) {
-                ctx.channel().writeAndFlush("该设备未连接");
+                log.error("该设备未连接: {}", identity);
+                return;
             }
 
-            assert channel != null;
             PushMessage request = PushMessage.buildRequestEntity();
             request.getBody().setFrom(content.getFrom());
             request.getBody().setTo(identity);

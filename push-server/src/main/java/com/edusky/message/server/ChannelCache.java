@@ -5,6 +5,8 @@ import com.edusky.message.api.toolkit.Objs;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -21,10 +23,13 @@ public class ChannelCache {
         return identity.getOpenId() + ":" + identity.getDeviceType();
     }
 
-    private static void closeChannel(MsgIdentity identity) {
-        Channel channel = map.get(getKey(identity));
+    private static void closeChannel(Channel channel) {
         if (Objs.nonEmpty(channel))
             channel.close();
+    }
+
+    private static void closeChannel(MsgIdentity identity) {
+        closeChannel(map.get(getKey(identity)));
     }
 
     private static String getKey(Channel channel) {
@@ -37,6 +42,7 @@ public class ChannelCache {
     }
 
     public static void put(MsgIdentity identity, Channel channel) {
+        closeChannel(identity);
         map.put(getKey(identity), channel);
     }
 
@@ -51,6 +57,7 @@ public class ChannelCache {
 
     public static void remove(Channel channel) {
         map.remove(getKey(channel));
+        closeChannel(channel);
     }
 
     public static void flush(MsgIdentity identity, Channel channel) {
@@ -58,7 +65,7 @@ public class ChannelCache {
         map.put(getKey(identity), channel);
     }
 
-    public static boolean contain(MsgIdentity identity) {
+    public static boolean contains(MsgIdentity identity) {
         return map.containsKey(getKey(identity));
     }
 

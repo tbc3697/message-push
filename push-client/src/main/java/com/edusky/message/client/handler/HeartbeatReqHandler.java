@@ -24,11 +24,7 @@ public class HeartbeatReqHandler extends SimpleChannelInboundHandler<PushMessage
         // 如果握手响应消息，握手成功，主动发送心跳信息
         if (header != null && MsgType.LOGIN_RES.equals(header.getType())) {
             heartbeat = ctx.executor().scheduleAtFixedRate(
-//                    new HeartbeatReqHandler.HeartbeatTask(ctx),
-                    () -> {
-                        log.debug("client send heart beat message to server: {}", heartbeat);
-                        ctx.writeAndFlush(PushMessage.buildHeartbeatRequestEntity());
-                    },
+                    new HeartbeatReqHandler.HeartbeatTask(ctx),
                     0,
                     5000,
                     TimeUnit.MILLISECONDS

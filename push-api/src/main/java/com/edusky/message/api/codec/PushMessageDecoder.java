@@ -33,7 +33,7 @@ public class PushMessageDecoder extends LengthFieldBasedFrameDecoder {
         ByteBuf frame = (ByteBuf) super.decode(context, in);
         if (frame == null) return null;
 
-        // 开始解码
+        /* 开始解码 */
         PushMessage pushMessage = new PushMessage();
         MessageHeader header = new MessageHeader();
         header.setLength(frame.readInt());
