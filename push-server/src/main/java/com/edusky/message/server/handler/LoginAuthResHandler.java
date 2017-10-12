@@ -26,7 +26,7 @@ public class LoginAuthResHandler extends SimpleChannelInboundHandler<PushMessage
         if (MsgType.LOGIN_REQ.equals(header.getType())) {
             PushMessageContent messageContent = msg.getBody();
             MsgIdentity identity = messageContent.getFrom();
-            log.info("连接认证请求, 来自: {}", identity);
+            log.info("连接认证请求, 来自: {}, IP: {}", identity, ctx.channel().remoteAddress());
             //1. 验证token,通过则加入缓存（若存在，关掉旧连接，并刷新连接缓存
             if (checkToken(identity)) {
                 ChannelCache.flush(identity, ctx.channel());

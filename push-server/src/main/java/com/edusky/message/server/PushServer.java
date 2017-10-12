@@ -48,7 +48,7 @@ class PushServer {
                     });
             // 绑定端口，同步等待成功
             ChannelFuture future = b.bind(address).sync();
-            log.info("MessagePush server start ok : {}:{}", Constant.HOST, Constant.PORT);
+            log.info("MessagePush server start ok : {}:{}", address.getHostString(), address.getPort());
             future.channel().closeFuture().sync();
         } catch (InterruptedException e1) {
             e1.printStackTrace();
