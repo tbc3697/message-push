@@ -1,7 +1,6 @@
 package mypush;
 
 import com.alibaba.fastjson.JSON;
-import com.edusky.message.api.message.MyPushMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;

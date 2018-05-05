@@ -17,9 +17,9 @@
 1. 启动： 
 ```
 // 使用默认本地IP及端口
-java com.edusky.message.server.ServerBootstrap
+java ServerBootstrap
 // 不使用默认值，自己指定
-java com.edusky.message.server.ServerBootstrap 192.168.1.1 7007
+java ServerBootstrap 192.168.1.1 7007
 ```
 或者打成可执行jar包后：
 ```
